@@ -1,0 +1,205 @@
+[
+  {
+    "Rijeka": "DUNAV",
+    "Postaja": "BATINA",
+    "Vodostaj": "503",
+    "Tendencija": "-4",
+    "Protok": "4484"
+  },
+  {
+    "Rijeka": "DUNAV",
+    "Postaja": "ALJMAŠ",
+    "Vodostaj": "545",
+    "Tendencija": "+13",
+    "Protok": "5149"
+  },
+  {
+    "Rijeka": "DUNAV",
+    "Postaja": "DALJ",
+    "Vodostaj": "678",
+    "Tendencija": "+14",
+    "Protok": "5180"
+  },
+  {
+    "Rijeka": "DUNAV",
+    "Postaja": "VUKOVAR",
+    "Vodostaj": "466",
+    "Tendencija": "+13",
+    "Protok": "5125"
+  },
+  {
+    "Rijeka": "DUNAV",
+    "Postaja": "ILOK MOST",
+    "Vodostaj": "472",
+    "Tendencija": "+14",
+    "Protok": "5008"
+  },
+  {
+    "Rijeka": "DRAVA",
+    "Postaja": "BOTOVO",
+    "Vodostaj": "263",
+    "Tendencija": "-27",
+    "Protok": "784.5"
+  },
+  {
+    "Rijeka": "DRAVA",
+    "Postaja": "TEREZINO POLJE",
+    "Vodostaj": "-12",
+    "Tendencija": "-76",
+    "Protok": "1107"
+  },
+  {
+    "Rijeka": "DRAVA",
+    "Postaja": "BELIŠĆE",
+    "Vodostaj": "493",
+    "Tendencija": "-2",
+    "Protok": "1505"
+  },
+  {
+    "Rijeka": "DRAVA",
+    "Postaja": "OSIJEK",
+    "Vodostaj": "367 6h",
+    "Tendencija": "---",
+    "Protok": "---"
+  },
+  {
+    "Rijeka": "MURA",
+    "Postaja": "MURSKO SREDIŠĆE",
+    "Vodostaj": "296",
+    "Tendencija": "-6",
+    "Protok": "390.8"
+  },
+  {
+    "Rijeka": "MURA",
+    "Postaja": "GORIČAN",
+    "Vodostaj": "279",
+    "Tendencija": "-18",
+    "Protok": "405.9"
+  },
+  {
+    "Rijeka": "SAVA",
+    "Postaja": "DRENJE BRDOVEČKO",
+    "Vodostaj": "-42",
+    "Tendencija": "-8",
+    "Protok": "402.8"
+  },
+  {
+    "Rijeka": "SAVA",
+    "Postaja": "ZAGREB",
+    "Vodostaj": "-94",
+    "Tendencija": "+0",
+    "Protok": "457.1"
+  },
+  {
+    "Rijeka": "SAVA",
+    "Postaja": "CRNAC",
+    "Vodostaj": "688",
+    "Tendencija": "-12",
+    "Protok": "---"
+  },
+  {
+    "Rijeka": "SAVA",
+    "Postaja": "JASENOVAC",
+    "Vodostaj": "822",
+    "Tendencija": "-3",
+    "Protok": "2293"
+  },
+  {
+    "Rijeka": "SAVA",
+    "Postaja": "STARA GRADIŠKA",
+    "Vodostaj": "741",
+    "Tendencija": "+3",
+    "Protok": "2311"
+  },
+  {
+    "Rijeka": "SAVA",
+    "Postaja": "MAČKOVAC USTAVA",
+    "Vodostaj": "879",
+    "Tendencija": "+1",
+    "Protok": "2344"
+  },
+  {
+    "Rijeka": "SAVA",
+    "Postaja": "DAVOR C.S.",
+    "Vodostaj": "863",
+    "Tendencija": "-2",
+    "Protok": "2519"
+  },
+  {
+    "Rijeka": "SAVA",
+    "Postaja": "SLAVONSKI BROD",
+    "Vodostaj": "705",
+    "Tendencija": "+1",
+    "Protok": "2545"
+  },
+  {
+    "Rijeka": "SAVA",
+    "Postaja": "SLAVONSKI ŠAMAC MOST",
+    "Vodostaj": "560",
+    "Tendencija": "-4",
+    "Protok": "---"
+  },
+  {
+    "Rijeka": "SAVA",
+    "Postaja": "ŽUPANJA STEPENICA",
+    "Vodostaj": "767",
+    "Tendencija": "-5",
+    "Protok": "2723"
+  },
+  {
+    "Rijeka": "SAVA",
+    "Postaja": "KRAPINA",
+    "Vodostaj": "KUPLJENOVO",
+    "Tendencija": "113",
+    "Protok": "-15"
+  },
+  {
+    "Rijeka": "KUPA",
+    "Postaja": "KAMANJE",
+    "Vodostaj": "135",
+    "Tendencija": "-21",
+    "Protok": "81.85"
+  },
+  {
+    "Rijeka": "KUPA",
+    "Postaja": "KARLOVAC",
+    "Vodostaj": "380",
+    "Tendencija": "-128",
+    "Protok": "---"
+  },
+  {
+    "Rijeka": "KUPA",
+    "Postaja": "JAMNIČKA KISELICA",
+    "Vodostaj": "514",
+    "Tendencija": "-132",
+    "Protok": "731.7"
+  },
+  {
+    "Rijeka": "KUPA",
+    "Postaja": "FARKAŠIĆ",
+    "Vodostaj": "871",
+    "Tendencija": "-60",
+    "Protok": "938.3"
+  },
+  {
+    "Rijeka": "KORANA",
+    "Postaja": "KARLOVAC",
+    "Vodostaj": "400",
+    "Tendencija": "-121",
+    "Protok": "---"
+  },
+  {
+    "Rijeka": "UNA",
+    "Postaja": "KOSTAJNICA",
+    "Vodostaj": "230",
+    "Tendencija": "-28",
+    "Protok": "579.0"
+  },
+  {
+    "Rijeka": "NERETVA",
+    "Postaja": "METKOVIĆ",
+    "Vodostaj": "115",
+    "Tendencija": "-17",
+    "Protok": "---"
+  }
+]
