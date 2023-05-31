@@ -3,10 +3,248 @@
 <head>
   <script src="http://d3js.org/d3.v3.min.js"></script>
   <script src="http://d3js.org/topojson.v1.min.js"></script>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      display: flex;
+    }
+    #left {
+      width: 60%;
+      
+    }
+    #right {
+      width: 40%;
+      background-color: #f0f0f0;
+      padding: 20px;
+    }
+    .dot {
+      fill: steelblue;
+      stroke: steelblue;
+    }
+    .line {
+      fill: none;
+      stroke: steelblue;
+      stroke-width: 2px;
+    }
+  </style>
   <title>Vodostaj</title>
 </head>
 <body>
+  <div id="left"></div>
+  <div id="right">
+    <h2 id="NazivRijeke"></h2>
+    <p id="opis"></p>
+    <p id="Podatak"></p>
+  </div>
   <script>
+    var data1 =[
+  {
+    "Rijeka": "DUNAV",
+    "Postaja": "BATINA",
+    "Vodostaj": ["406","402","398","406","408","409","410","409","412","421","424","432","424","422","426","434","432","432","425","424","430"],
+    "Tendencija": "-19",
+    "Protok": "4096"
+  },
+  {
+    "Rijeka": "DUNAV",
+    "Postaja": "ALJMAŠ",
+    "Vodostaj": ["541","547","540","536","540","538","531","530","526","522","525","524","518","512","518","522","521","524","520","518","514"],
+    "Tendencija": "-14",
+    "Protok": "5113"
+  },
+  {
+    "Rijeka": "DUNAV",
+    "Postaja": "DALJ",
+    "Vodostaj": ["685","686","685","688","691","687","686","690","691","690","690","692","694","692","692","688","686","688","687","684","680"],
+    "Tendencija": "-8",
+    "Protok": "5239"
+  },
+  {
+    "Rijeka": "DUNAV",
+    "Postaja": "VUKOVAR",
+    "Vodostaj": ["481","480","480","479","478","477","478","478","477","476","476","477","478","478","476","476","477","476","476","476","477"],
+    "Tendencija": "-3",
+    "Protok": "5262"
+  },
+  {
+    "Rijeka": "DUNAV",
+    "Postaja": "ILOK",
+    "Vodostaj": ["497","502","503","499","502","506","502","499","496","491","490","486","484","483","479","478","480","478","480","481","486"],
+    "Tendencija": "+0",
+    "Protok": "5242"
+  },
+  {
+    "Rijeka": "DRAVA",
+    "Postaja": "BOTOVO",
+    "Vodostaj": ["262","264","262","260","261","264","268","268","268","266","262","256","254","255","252","250","252","248","248","250","244"],
+    "Tendencija": "+2",
+    "Protok": "781.9"
+  },
+  {
+    "Rijeka": "DRAVA",
+    "Postaja": "TEREZINO POLJE",
+    "Vodostaj": ["-75","-80","-84","-85","-88","-82","-76","-72","-73","-73","-70","-66","-60","-58","-56","-61","-60","-63","-69","-68","-66"],
+    "Tendencija": "-6",
+    "Protok": "969.8"
+  },
+  {
+    "Rijeka": "DRAVA",
+    "Postaja": "BELIŠĆE",
+    "Vodostaj": ["367","370","370","368","374","368","368","366","372","368","362","360","356","350","350","354","360","356","358","358","355"],
+    "Tendencija": "-32",
+    "Protok": "1056"
+  },
+  {
+    "Rijeka": "DRAVA",
+    "Postaja": "OSIJEK",
+    "Vodostaj": ["309","302","291","280","294","281","296","303","300","306","323","312","302","306","298","313","320","337","346","366","358"],
+    "Tendencija": "-40",
+    "Protok": "---"
+  },
+  {
+    "Rijeka": "MURA",
+    "Postaja": "MURSKO SREDIŠĆE",
+    "Vodostaj": ["303","304","304","303","304","306","309","306","308","312","315","316","319","320","322","324","324","324","320","322","322"],
+    "Tendencija": "-7",
+    "Protok": "406.6"
+  },
+  {
+    "Rijeka": "MURA",
+    "Postaja": "GORIČAN",
+    "Vodostaj": ["291","294","287","294","289","287","294","298","304","296","298","302","302","308","306","298","290","290","294","296","288"],
+    "Tendencija": "+16",
+    "Protok": "429.9"
+  },
+  {
+    "Rijeka": "SAVA",
+    "Postaja": "DRENJE BRDOVEČKO",
+    "Vodostaj": ["-78","-65","-62","-74","-95","-98","-78","-74","-52","-30","-10","-32","-24","-33","-41","-46","-55","-42","-34","-20","-19"],
+    "Tendencija": "-46",
+    "Protok": "316.8"
+  },
+  {
+    "Rijeka": "SAVA",
+    "Postaja": "ZAGREB",
+    "Vodostaj": ["-169","-182","-206","-186","-178","-196","-206","-205","-192","-187","-184","-202","-185","-194","-208","-206","-188","-178","-170","-156","-178"],
+    "Tendencija": "-50",
+    "Protok": "277.6"
+  },
+  {
+    "Rijeka": "SAVA",
+    "Postaja": "CRNAC",
+    "Vodostaj": ["550","558","549","538","527","501","523","536","538","529","516","534","531","538","540","520","512","485","472","480","457"],
+    "Tendencija": "-54",
+    "Protok": "---"
+  },
+  {
+    "Rijeka": "SAVA",
+    "Postaja": "JASENOVAC",
+    "Vodostaj": ["795","798","794","797","796","800","795","798","797","798","793","791","790","788","788","783","786","787","781","782","780"],
+    "Tendencija": "-12",
+    "Protok": "2177"
+  },
+  {
+    "Rijeka": "SAVA",
+    "Postaja": "STARA GRADIŠKA",
+    "Vodostaj": ["795","796","798","799","800","800","800","802","800","800","798","800","800","800","800","799","800","799","798","797","798"],
+    "Tendencija": "-3",
+    "Protok": "---"
+  },
+  {
+    "Rijeka": "SAVA",
+    "Postaja": "MAČKOVAC USTAVA",
+    "Vodostaj": ["867","868","869","869","866","866","870","874","874","874","876","873","868","869","874","875","875","870","869","872","875"],
+    "Tendencija": "-9",
+    "Protok": "2286"
+  },
+  {
+    "Rijeka": "SAVA",
+    "Postaja": "DAVOR C.S.",
+    "Vodostaj": ["848","852","850","852","853","852","852","850","854","856","858","854","856","852","851","850","854","858","857","861","861"],
+    "Tendencija": "-9",
+    "Protok": "2457"
+  },
+  {
+    "Rijeka": "SAVA",
+    "Postaja": "SLAVONSKI BROD",
+    "Vodostaj": ["691","692","689","688","688","686","690","690","690","694","695","698","697","698","698","696","695","694","694","698","694"],
+    "Tendencija": "-6",
+    "Protok": "2494"
+  },
+  {
+    "Rijeka": "SAVA",
+    "Postaja": "SLAVONSKI ŠAMAC",
+    "Vodostaj": ["542","539","536","537","538","534","531","526","528","528","524","520","518","521","517","515","514","512","514","517","516"],
+    "Tendencija": "-5",
+    "Protok": "---"
+  },
+  {
+    "Rijeka": "SAVA",
+    "Postaja": "ŽUPANJA",
+    "Vodostaj": ["747","750","748","750","754","752","752","749","748","744","740","736","738","742","742","740","736","739","734","736","736"],
+    "Tendencija": "-6",
+    "Protok": "2644"
+  },
+  {
+    "Rijeka": "KRAPINA",
+    "Postaja": "KUPLJENOVO",
+    "Vodostaj": ["91","94","98","100","97","96","98","97","99","96","96","92","94","92","94","96","98","100","104","105","106"],
+    "Tendencija": "-7",
+    "Protok": "11.40"
+  },
+  {
+    "Rijeka": "KUPA",
+    "Postaja": "KAMANJE",
+    "Vodostaj": ["102","103","104","102","102","100","102","102","101","102","100","100","100","99","96","98","99","97","95","92","93"],
+    "Tendencija": "-8",
+    "Protok": "49.86"
+  },
+  {
+    "Rijeka": "KUPA",
+    "Postaja": "KARLOVAC",
+    "Vodostaj": ["118","118","120","126","134","132","122","128","126","130","136","132","127","116","117","125","128","128","137","146","149"],
+    "Tendencija": "-29",
+    "Protok": "---"
+  },
+  {
+    "Rijeka": "KUPA",
+    "Postaja": "JAMNIČKA KISELICA",
+    "Vodostaj": ["195","200","199","212","218","230","244","258","262","257","246","262","252","255","244","238","242","258","272","286","292"],
+    "Tendencija": "-35",
+    "Protok": "267.3"
+  },
+  {
+    "Rijeka": "KUPA",
+    "Postaja": "FARKAŠIĆ",
+    "Vodostaj": ["475","426","457","421","389","392","343","350","374","340","338","288","306","330","292","280","298","264","214","250","296"],
+    "Tendencija": "-101",
+    "Protok": "378.2"
+  },
+  {
+    "Rijeka": "KORANA",
+    "Postaja": "KARLOVAC",
+    "Vodostaj": ["331","334","334","336","336","335","334","331","331","328","328","326","328","326","323","322","321","321","324","324","326"],
+    "Tendencija": "-7",
+    "Protok": "---"
+  },
+  {
+    "Rijeka": "UNA",
+    "Postaja": "KOSTAJNICA",
+    "Vodostaj": ["186","184","181","176","173","168","172","174","171","170","174","178","180","176","172","171","166","166","162","162","161"],
+    "Tendencija": "-11",
+    "Protok": "433.8"
+  },
+  {
+    "Rijeka": "NERETVA",
+    "Postaja": "METKOVIĆ",
+    "Vodostaj": ["94","100","98","94","90","93","86","86","78","71","77","81","79","78","80","80","74","79","72","64","66"],
+    "Tendencija": "-18",
+    "Protok": "---"
+  }
+];
+  
+
   var width = 960;
   var height = 700;
   var centered;
@@ -20,56 +258,192 @@
   var path = d3.geo.path()
     .projection(projection);
 
-  var svg = d3.select("body").append("svg")
+  var svg = d3.select("#left").append("svg")
     .attr("width", width)
     .attr("height", height)
     .style("background", "white");
 
   var g = svg.append("g");
 
-  d3.json("cro_regv3.json", function(error, cro) {
-    var data = topojson.feature(cro, cro.objects.layer1);
+  d3.json("cro_regv3.json", function(error, cro) 
+  {
+      var data = topojson.feature(cro, cro.objects.layer1);
+      var counties = g.selectAll("path.county")
+        .data(data.features)
+        .enter()
+        .append("path")
+        .attr("class", "county")
+        .attr("id", function(d) { return d.id; })
+        .attr("d", path)
+        .style("fill", "white")
+        .style("stroke", "gray")
+        .style("stroke-width", 1)
+        .style("stroke-opacity", 1);
 
-    var counties = g.selectAll("path.county")
-      .data(data.features)
-      .enter()
-      .append("path")
-      .attr("class", "county")
-      .attr("id", function(d) { return d.id; })
-      .attr("d", path)
-      .style("fill", "white")
-      .style("stroke", "gray")
-      .style("stroke-width", 1)
-      .style("stroke-opacity", 1);
 
-    d3.json("rivers.geojson", function(error, rivers) {
-      var riversData = rivers.features;
 
-      var riversPath = g.selectAll(".river")
+      d3.json("rivers.geojson", function(error, rivers) {
+        var riversData = rivers.features;
+        var riversPath = g.selectAll(".river")
         .data(riversData)
         .enter()
         .append("path")
         .attr("class", "river")
         .attr("d", path)
         .style("fill", "none")
-        .style("stroke", "blue")
-        .style("stroke-width", 1);
+        .style("stroke", function(d) {
+        if (d.properties.Rijeka === "Dunav") {return getColorValue(data1.find(obj => obj.Postaja === "BATINA").Tendencija);} 
+        else if (d.properties.Rijeka === "Drava") {return getColorValue(data1.find(obj => obj.Postaja === "BOTOVO").Tendencija);}
+        else if (d.properties.Rijeka === "Mura") {return getColorValue(data1.find(obj => obj.Postaja === "MURSKO SREDIŠĆE").Tendencija);}
+        else if (d.properties.Rijeka === "Sava") {return getColorValue(data1.find(obj => obj.Postaja === "JASENOVAC").Tendencija);}
+        else if (d.properties.Rijeka === "Krapina") {return getColorValue(data1.find(obj => obj.Postaja === "KUPLJENOVO").Tendencija);}
+        else if (d.properties.Rijeka === "Kupa") {return getColorValue(data1.find(obj => obj.Postaja === "FARKAŠIĆ").Tendencija);}
+        else if (d.properties.Rijeka === "Korana") {return getColorValue(data1.find(obj => obj.Postaja === "KARLOVAC").Tendencija);}
+        else if (d.properties.Rijeka=== "Una") {return getColorValue(data1.find(obj => obj.Postaja === "KOSTAJNICA").Tendencija);}
+        else if (d.properties.Rijeka === "Neretva") {return getColorValue(data1.find(obj => obj.Postaja === "METKOVIĆ").Tendencija);}})
+        .style("stroke-width", 4);
 
-      riversPath.on("click", function(d) {
-        var bounds = path.bounds(d.geometry);
-        var dx = bounds[1][0] - bounds[0][0];
-        var dy = bounds[1][1] - bounds[0][1];
-        var x = (bounds[0][0] + bounds[1][0]) / 2;
-        var y = (bounds[0][1] + bounds[1][1]) / 2;
-        var scale = 0.9 / Math.max(dx / width, dy / height);
-        var translate = [width / 2 - scale * x, height / 2 - scale * y];
-        
-        g.transition()
-          .duration(750)
-          .attr("transform", "translate(" + translate + ")scale(" + scale + ")");
+        riversPath.on("click", function(d) {
+          var bounds = path.bounds(d.geometry);
+          var dx = bounds[1][0] - bounds[0][0];
+          var dy = bounds[1][1] - bounds[0][1];
+          var x = (bounds[0][0] + bounds[1][0]) / 2;
+          var y = (bounds[0][1] + bounds[1][1]) / 2;
+          var scale = 0.9 / Math.max(dx / width, dy / height);
+          var translate = [width / 2 - scale * x, height / 2 - scale * y];
+          
+          g.transition()
+            .duration(750)
+            .attr("transform", "translate(" + translate + ")scale(" + scale + ")");});
       });
-    });
+      
+      
+      d3.json("rivers.geojson", function(error, points) {
+        var pointsData = points.features;
+        var pointsCircles = g.selectAll(".point")
+        .data(pointsData)
+        .enter()
+        .append("circle")
+        .attr("class", "point")
+        .attr("cx", function(d) { return projection(d.geometry.coordinates)[0]; })
+        .attr("cy", function(d) { return projection(d.geometry.coordinates)[1]; })
+        .attr("r", 6)
+        .style("fill","red")
+        .on("click", function(d) {
+          document.getElementById("NazivRijeke").textContent=d.properties.Rijeka;
+          document.getElementById("opis").textContent="Postaja: "+d.properties.Postaja;
+          pointsCircles.style("fill","Red");
+          d3.select(this).style("fill", "blue");
+          drawGraph(d.properties.Postaja);
+          var foundObject = data1.find(obj => obj.Postaja.toLowerCase() === d.properties.Postaja.toLowerCase());
+          if (foundObject) {
+            document.getElementById("Podatak").textContent ="Tendencija: "+ foundObject.Tendencija;
+          } else {
+            document.getElementById("Podatak").textContent = "";
+          }
+          });
+      });
   });
+  
+  function getColorValue(inputValue) 
+  {
+
+    const blueColor = d3.rgb(0, 0, 255);
+    const redColor = d3.rgb(255, 0, 0);
+    const minValue = -100;
+    const maxValue = 100;
+    const normalizedValue = (inputValue - minValue) / (maxValue - minValue);
+
+    const color = d3.interpolate(blueColor, redColor)(normalizedValue);
+
+    return color;
+  }
+
+
+
+
+  function drawGraph(postaja)
+  {
+    d3.select("#right").select("svg").remove();
+      var data = [
+      { date: "2023-05-01", value: 5 },
+      { date: "2023-05-02", value: 5 },
+      { date: "2023-05-03", value: 5 },
+      { date: "2023-05-04", value: 5 },
+      { date: "2023-05-05", value: 5 },
+      { date: "2023-05-06", value: 5 },
+      { date: "2023-05-07", value: 5 },
+      { date: "2023-05-08", value: 5 },
+      { date: "2023-05-09", value: 5 },
+      { date: "2023-05-10", value: 5 },
+      { date: "2023-05-11", value: 5 },
+      { date: "2023-05-12", value: 5 },
+      { date: "2023-05-13", value: 5 },
+      { date: "2023-05-14", value: 5 },
+      { date: "2023-05-15", value: 5 },
+      { date: "2023-05-16", value: 5 },
+      { date: "2023-05-17", value: 5 },
+      { date: "2023-05-18", value: 5 },
+      { date: "2023-05-19", value: 5 },
+      { date: "2023-05-20", value: 5 }
+    ];
+    var ide=0;
+    data.forEach(function(d) {
+      d.value=data1.find(obj => obj.Postaja.toLocaleLowerCase() === postaja.toLocaleLowerCase()).Vodostaj[ide];
+      ide++;
+    });
+
+    var margin = { top: 20, right: 20, bottom: 30, left: 50 };
+    var width = 400 - margin.left - margin.right;
+    var height = 300 - margin.top - margin.bottom;
+    var parseDate = d3.time.format("%Y-%m-%d").parse;
+
+    data.forEach(function(d) {
+      d.date = parseDate(d.date);
+    });
+    var xScale = d3.time.scale()
+      .range([0, width]);
+
+    var yScale = d3.scale.linear()
+      .range([height, 0]);
+
+    var xAxis = d3.svg.axis()
+      .scale(xScale)
+      .orient("bottom");
+
+    var yAxis = d3.svg.axis()
+      .scale(yScale)
+      .orient("left");
+
+    var svg = d3.select("#right")
+      .append("svg")
+      .attr("width", width + margin.left + margin.right)
+      .attr("height", height + margin.top + margin.bottom)
+      .append("g")
+      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    xScale.domain(d3.extent(data, function(d) { return d.date; }));
+    yScale.domain([0, d3.max(data, function(d) { return d.value; })]);
+
+    var line = d3.svg.line()
+      .x(function(d) { return xScale(d.date); })
+      .y(function(d) { return yScale(d.value); });
+
+    svg.append("path")
+      .datum(data)
+      .attr("class", "line")
+      .attr("d", line);
+
+    svg.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis);
+
+    svg.append("g")
+      .attr("class", "y axis")
+      .call(yAxis);
+  }
+
   </script>
 </body>
 </html>
