@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <meta charset="UTF-8">
   <script src="http://d3js.org/d3.v3.min.js"></script>
   <script src="http://d3js.org/topojson.v1.min.js"></script>
   <style>
@@ -13,7 +14,7 @@
     }
 
     h1 {
-      margin-top: 20px;
+      margin-top: 10px;
       text-align: center;
       color: steelblue;
     }
@@ -28,7 +29,6 @@
 
     #left {
       width: 60%;
-      background-color: #f0f0f0;
       padding: 5px;
     }
 
@@ -49,9 +49,6 @@
       font-size: 24px;
     }
 
-    #opis {
-      margin-bottom: 20px;
-    }
 
     .dot {
       fill: steelblue;
@@ -63,6 +60,11 @@
       stroke: steelblue;
       stroke-width: 2px;
     }
+    .line2 {
+      fill: none;
+      stroke: #F4D03F;
+      stroke-width: 2px;
+    }
   </style>
   <title>Vodostaj</title>
 </head>
@@ -71,9 +73,6 @@
   <div id="container">
     <div id="left"></div>
     <div id="right" style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
-      <h2 id="NazivRijeke"></h2>
-      <p id="opis"></p>
-      <p id="Podatak"></p>
     </div>
   </div>
   <script>
@@ -81,7 +80,7 @@
   {
     "Rijeka": "DUNAV",
     "Postaja": "BATINA",
-    "Vodostaj": ["406","402","398","406","408","409","410","409","412","421","424","432","424","422","426","434","432","432","425","424","430"],
+    "Vodostaj": ["406","400","396","390","394","398","404","400","394","390","388","390","386","390","388","387","382","388","392","388","383"],
     "Tendencija": "-19",
     "Protok": "4096",
     "BrojPostaje":1
@@ -208,14 +207,6 @@
   },
   {
     "Rijeka": "SAVA",
-    "Postaja": "MAČKOVAC USTAVA",
-    "Vodostaj": ["867","868","869","869","866","866","870","874","874","874","876","873","868","869","874","875","875","870","869","872","875"],
-    "Tendencija": "-9",
-    "Protok": "2286",
-    "BrojPostaje":17
-  },
-  {
-    "Rijeka": "SAVA",
     "Postaja": "DAVOR",
     "Vodostaj": ["848","852","850","852","853","852","852","850","854","856","858","854","856","852","851","850","854","858","857","861","861"],
     "Tendencija": "-9",
@@ -312,6 +303,38 @@
   }
 ];
   
+var button = d3.select("#left")
+  .append("button")
+  .attr("class", "styled-button")
+  .text("Prikaži rijeke po bojama");
+button.style("background-color", "steelblue")
+  .style("color", "white")
+  .style("padding", "10px 20px")
+  .style("border", "none")
+  .style("border-radius", "4px")  
+  .style("cursor", "pointer")
+  .style("margin-left", "30px");
+var stisnuto=true;
+button.on("click", function() {
+  var legend = d3.select("#left").select(".legend");
+if (legend) {
+  legend.remove();
+}
+
+  if(stisnuto)
+  {
+    stisnuto=false;
+    PrikazRijekaLegenda();
+    button.text("Prikaži visinu vodostaja");
+  }
+  else
+  {
+    PrikazVodostajLegende();
+    stisnuto=true;
+    button.text("Prikaži rijeke po bojama");
+  }
+ 
+});
 
 var width = 960;
 var height = 700;
@@ -351,9 +374,11 @@ var zoom = d3.behavior.zoom()
 
     g.selectAll("path")
       .style("stroke-width", 1/ scale + "px");
+
     g.selectAll(".river")
       .style("stroke-width", 4/ scale + "px");
-      g.selectAll(".point")
+
+      g.selectAll("image")
     .attr("x", function(d) {
       return projection(d.geometry.coordinates)[0] - 12 / scale;
     })
@@ -362,7 +387,20 @@ var zoom = d3.behavior.zoom()
     })
     .attr("width", 24 / scale)
     .attr("height", 24 / scale);
+
+    g.selectAll(".point text")
+    .attr("x", function(d) {
+        return projection(d.geometry.coordinates)[0] + (-10 / scale);
+    })
+    .attr("y", function(d) {
+        return projection(d.geometry.coordinates)[1] + (-10 / scale);
+    })
+    .style("font-size", function() {
+        return scale >= 4 ? (12 / scale*2) + "px" : "0px";
+    });
+
   }
+  
   d3.json("cro_regv3.json", function(error, cro) 
   {
       var data = topojson.feature(cro, cro.objects.layer1);
@@ -381,70 +419,83 @@ var zoom = d3.behavior.zoom()
 
 
       d3.json("rivers.geojson", function(error, rivers) {
+
+        
         var riversData = rivers.features;
         var riversPath = g.selectAll(".river")
-        .data(riversData)
-        .enter()
-        .append("path")
-        .attr("class", "river")
-        .attr("d", path)
-        .style("fill", "none")
-        .style("stroke", function(d) {
-        if (d.properties.Rijeka === "Dunav") {return getColorValue(data1.find(obj => obj.BrojPostaje === 1).Tendencija);} 
-        else if (d.properties.Rijeka === "Drava") {return getColorValue(data1.find(obj => obj.BrojPostaje === 6).Tendencija);}
-        else if (d.properties.Rijeka === "Mura") {return getColorValue(data1.find(obj => obj.BrojPostaje === 10).Tendencija);}
-        else if (d.properties.Rijeka === "Sava") {return getColorValue(data1.find(obj => obj.BrojPostaje === 12).Tendencija);}
-        else if (d.properties.Rijeka === "Krapina") {return getColorValue(data1.find(obj => obj.BrojPostaje === 22).Tendencija);}
-        else if (d.properties.Rijeka === "Kupa") {return getColorValue(data1.find(obj => obj.BrojPostaje === 23).Tendencija);}
-        else if (d.properties.Rijeka === "Korana") {return getColorValue(data1.find(obj => obj.BrojPostaje === 27).Tendencija);}
-        else if (d.properties.Rijeka === "Una") {return getColorValue(data1.find(obj => obj.BrojPostaje === 11).Tendencija);}
-        else if (d.properties.Rijeka === "Neretva") {return getColorValue(data1.find(obj => obj.BrojPostaje === 18).Tendencija);}})
-        .style("stroke-width", 4);
+          .data(riversData)
+          .enter()
+          .append("path")
+          .attr("class", "river")
+          .attr("d", path)
+          .style("fill", "none")
+          .style("stroke", function(d) {
+          if (d.properties.Rijeka === "Dunav") {return getColorValue(data1.find(obj => obj.BrojPostaje === 1).Tendencija);} 
+          else if (d.properties.Rijeka === "Drava") {return getColorValue(data1.find(obj => obj.BrojPostaje === 6).Tendencija);}
+          else if (d.properties.Rijeka === "Mura") {return getColorValue(data1.find(obj => obj.BrojPostaje === 10).Tendencija);}
+          else if (d.properties.Rijeka === "Sava") {return getColorValue(data1.find(obj => obj.BrojPostaje === 12).Tendencija);}
+          else if (d.properties.Rijeka === "Krapina") {return getColorValue(data1.find(obj => obj.BrojPostaje === 22).Tendencija);}
+          else if (d.properties.Rijeka === "Kupa") {return getColorValue(data1.find(obj => obj.BrojPostaje === 23).Tendencija);}
+          else if (d.properties.Rijeka === "Korana") {return getColorValue(data1.find(obj => obj.BrojPostaje === 27).Tendencija);}
+          else if (d.properties.Rijeka === "Una") {return getColorValue(data1.find(obj => obj.BrojPostaje === 11).Tendencija);}
+          else if (d.properties.Rijeka === "Neretva") {return getColorValue(data1.find(obj => obj.BrojPostaje === 18).Tendencija);}})
+          .style("stroke-width", 4);
       });
       d3.json("stations.geojson", function(error, points) {
   var pointsData = points.features;
   var pointsMarkers = g.selectAll(".point")
     .data(pointsData)
     .enter()
-    .append("image")
-    .attr("class", "point")
+    .append("g") 
+    .attr("class", "point");
+  var br=0;
+  pointsMarkers.append("image")
     .attr("x", function(d) { return projection(d.geometry.coordinates)[0] - 12; })
     .attr("y", function(d) { return projection(d.geometry.coordinates)[1] - 24; })
     .attr("width", 24)
     .attr("height", 24)
     .attr("xlink:href", "marker.png")
     .on("click", function(d) {
-      document.getElementById("NazivRijeke").textContent = d.properties.Rijeka;
-      var textElement = d3.select("#opis")
-        .text("Postaja: " + d.properties.Postaja)
-        .style("opacity", 0)
-        textElement.transition()
-        .duration(1000)
-        .style("opacity", 1)
-      var foundObject = data1.find(obj => obj.BrojPostaje === d.properties.BrojPostaje);
-      drawGraph(d.properties);
-      if (foundObject) {
-        var textElement = d3.select("#Podatak")
-        .text("Tendencija: " + foundObject.Tendencija)
-        .style("opacity", 0)
-        textElement.transition()
-        .duration(1000)
-        .style("opacity", 1)
-      } else {
-        document.getElementById("Podatak").textContent = "";
-      }
-
-      pointsMarkers.attr("xlink:href", "marker.png");
-      d3.select(this)
-        .transition()
-        .duration(200)
-        .attr("transform", "translate(0,-10)")
-        .transition()
-        .duration(200)
-        .attr("transform", "translate(0,0)")
-        .attr("xlink:href", "marker_selected.png");
-
+      if (d3.event.shiftKey) 
+      {
+        
+        if(br<1)
+        {
+          d3.select(this)
+          .transition()
+          .duration(200)
+          .attr("transform", "translate(0,-10)")
+          .transition()
+          .duration(200)
+          .attr("transform", "translate(0,0)")
+          .attr("xlink:href", "marker_shift.png");
+          drawGraph(d.properties,false,d.properties.Rijeka,d.properties.Postaja);
+        }
+        br++;
+      } 
+      else 
+      {
+        br=0;
+        drawGraph(d.properties,true,d.properties.Rijeka,d.properties.Postaja);
+        pointsMarkers.selectAll("image")
+          .attr("xlink:href", "marker.png");
+        d3.select(this)
+          .transition()
+          .duration(200)
+          .attr("transform", "translate(0,-10)")
+          .transition()
+          .duration(200)
+          .attr("transform", "translate(0,0)")
+          .attr("xlink:href", "marker_selected.png");
+        }
     });
+    
+  pointsMarkers.append("text")
+    .attr("x", function(d) { return projection(d.geometry.coordinates)[0] - 10; })
+    .attr("y", function(d) { return projection(d.geometry.coordinates)[1] - 10; })
+    .text(function(d) { return d.properties.Postaja; })
+    .style("text-anchor", "end")
+    .style("font-size", 0);
 });
 });
   
@@ -455,9 +506,17 @@ var zoom = d3.behavior.zoom()
     else return "#3498DB";
   }
 
-  function drawGraph(postaja)
+  function drawGraph(postaja,clearPrevious,rijekaText,postajaText)
   {
-    d3.select("#right").select("svg").remove();
+    var boja="#FCF3CF"
+    var linecol="line2"
+    if (clearPrevious) 
+    {
+      boja="#D6EAF8"
+      linecol="line"
+    d3.select("#right").selectAll("svg").remove();
+    }
+
     
       var data = [
       { date: "2023-05-01", value: 0 },
@@ -487,9 +546,9 @@ var zoom = d3.behavior.zoom()
       ide++;
     });
 
-    var margin = { top: 40, right: 40, bottom: 60, left: 60 };
-var width = 600 - margin.left - margin.right;
-var height = 400 - margin.top - margin.bottom;
+    var margin = { top: 80, right: 0, bottom: 60, left: 80 };
+var width = 700 - margin.left - margin.right;
+var height = 350 - margin.top - margin.bottom;
 var parseDate = d3.time.format("%Y-%m-%d").parse;
 
 data.forEach(function(d) {
@@ -510,12 +569,13 @@ var yAxis = d3.svg.axis()
   .scale(yScale)
   .orient("left");
 
-var svg = d3.select("#right")
-  .append("svg")
-  .attr("width", width + margin.left + margin.right)
-  .attr("height", height + margin.top + margin.bottom)
-  .append("g")
-  .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+  var svg = d3.select("#right")
+    .append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
 
 xScale.domain(d3.extent(data, function(d) { return d.date; }));
 yScale.domain([d3.min(data, function(d) { return d.value; }), d3.max(data, function(d) { return d.value; })]);
@@ -536,7 +596,7 @@ svg.append("path")
   .attr("d", area(data.map(function(d) {
     return { date: d.date, value: yScale.domain()[0] };
     })))
-    .style("fill", "#D6EAF8")
+    .style("fill", boja)
     .style("opacity", 0)
     .transition()
     .duration(800)
@@ -545,7 +605,7 @@ svg.append("path")
     
 var initialLine = svg.append("path")
   .datum(data)
-  .attr("class", "line")
+  .attr("class", linecol)
   .attr("d", line(data[0]))
   .style("stroke-opacity", 0);
 
@@ -562,7 +622,7 @@ initialLine.attr("stroke-dasharray", totalLength + " " + totalLength)
 svg.append("text")
   .attr("class", "axis-label")
   .attr("transform", "rotate(-90)")
-  .attr("y", 0 - margin.left)
+  .attr("y", -1 - margin.left)
   .attr("x", 0 - (height / 2))
   .attr("dy", "1em")
   .style("text-anchor", "middle")
@@ -571,9 +631,16 @@ svg.append("text")
 svg.append("text")
   .attr("class", "chart-title")
   .attr("x", (width / 2))
-  .attr("y", 0 - (margin.top / 2))
+  .attr("y", -5 - (margin.top / 2))
   .attr("text-anchor", "middle")
-  .text("Podaci zadnjih 20 dana");
+  .text("Postaja: "+ postajaText);
+
+svg.append("text")
+  .attr("class", "chart-title")
+  .attr("x", (width / 2))
+  .attr("y", -25 - (margin.top / 2))
+  .attr("text-anchor", "middle")
+  .text("Rijeka: "+ rijekaText);
 
 svg.append("g")
   .attr("class", "x axis")
@@ -643,7 +710,7 @@ svg.on("mouseover", function() {
                   .attr("y2", y);
 
     tooltip.html("Razina: " + d.value+" (cm)")
-           .style("left", (d3.event.pageX + 10) + "px")
+           .style("left", (d3.event.pageX + 0) + "px")
            .style("top", (d3.event.pageY - 10) + "px");
   })
   .on("mouseout", function() {
@@ -653,8 +720,9 @@ svg.on("mouseover", function() {
     tooltip.style("display", "none");
   });
   }
-
-var legendData = [
+function PrikazVodostajLegende()
+{
+  var legendData = [
   { color: "#E74C3C", label: "Razina vode u porastu" },
   { color: "#3498DB", label: "Normalno stanje" },
   { color: "#F4D03F", label: "Razina vode u opadanju" }
@@ -666,7 +734,14 @@ var legendWidth = 200;
 var legendHeight = 100;
 var legendSpacing = 20;
 
-var legend = g.append("g")
+var legend = d3.select("#left")
+  .append("svg")
+  .style("position", "absolute")
+  .style("top", "150px")
+  .style("left", "20px")
+  .attr("width", legendWidth)
+  .attr("height", legendHeight)
+  .append("g")
   .attr("class", "legend")
   .attr("transform", "translate(" + legendX + "," + legendY + ")");
 
@@ -689,6 +764,85 @@ legendItems.append("text")
   .attr("y", 12)
   .text(function(d) { return d.label; })
   .attr("dy", ".35em");
+  var rivers = g.selectAll(".river");
+rivers.style("stroke", function(d) {
+  if (d.properties.Rijeka === "Dunav") { return getColorValue(data1.find(obj => obj.BrojPostaje === 1).Tendencija); } 
+  else if (d.properties.Rijeka === "Drava") { return getColorValue(data1.find(obj => obj.BrojPostaje === 6).Tendencija); }
+  else if (d.properties.Rijeka === "Mura") { return getColorValue(data1.find(obj => obj.BrojPostaje === 10).Tendencija); }
+  else if (d.properties.Rijeka === "Sava") { return getColorValue(data1.find(obj => obj.BrojPostaje === 12).Tendencija); }
+  else if (d.properties.Rijeka === "Krapina") { return getColorValue(data1.find(obj => obj.BrojPostaje === 22).Tendencija); }
+  else if (d.properties.Rijeka === "Kupa") { return getColorValue(data1.find(obj => obj.BrojPostaje === 23).Tendencija); }
+  else if (d.properties.Rijeka === "Korana") { return getColorValue(data1.find(obj => obj.BrojPostaje === 27).Tendencija); }
+  else if (d.properties.Rijeka === "Una") { return getColorValue(data1.find(obj => obj.BrojPostaje === 11).Tendencija); }
+  else if (d.properties.Rijeka === "Neretva") { return getColorValue(data1.find(obj => obj.BrojPostaje === 18).Tendencija); }
+});
+}
+function PrikazRijekaLegenda()
+{
+  var legendData = [
+  { color: "red", label: "Dunav" },
+  { color: "blue", label: "Drava" },
+  { color: "green", label: "Mura" },
+  { color: "yellow", label: "Sava" },
+  { color: "purple", label: "Krapina" },
+  { color: "brown", label: "Kupa" },
+  { color: "orange", label: "Korana" },
+  { color: "black", label: "Una" },
+  { color: "cyan", label: "Neretva" }
+];
+
+var legendX = 20;
+var legendY = 20;
+var legendWidth = 200;
+var legendHeight = 200;
+var legendSpacing = 20;
+
+var legend = d3.select("#left")
+  .append("svg")
+  .style("position", "absolute")
+  .style("top", "150px")
+  .style("left", "20px")
+  .attr("width", legendWidth)
+  .attr("height", legendHeight)
+  .append("g")
+  .attr("class", "legend")
+  .attr("transform", "translate(" + legendX + "," + legendY + ")");
+
+var legendItems = legend.selectAll(".legend-item")
+  .data(legendData)
+  .enter()
+  .append("g")
+  .attr("class", "legend-item")
+  .attr("transform", function(d, i) {
+    return "translate(0," + (i * legendSpacing) + ")";
+  });
+
+legendItems.append("rect")
+  .attr("width", 16)
+  .attr("height", 16)
+  .style("fill", function(d) { return d.color; });
+
+legendItems.append("text")
+  .attr("x", 24)
+  .attr("y", 12)
+  .text(function(d) { return d.label; })
+  .attr("dy", ".35em");
+
+var rivers = g.selectAll(".river");
+
+rivers.style("stroke", function(d) {
+  if (d.properties.Rijeka === "Dunav") { return legendData[0].color} 
+  else if (d.properties.Rijeka === "Drava") { return legendData[1].color }
+  else if (d.properties.Rijeka === "Mura") { return legendData[2].color }
+  else if (d.properties.Rijeka === "Sava") { return legendData[3].color }
+  else if (d.properties.Rijeka === "Krapina") { return legendData[4].color}
+  else if (d.properties.Rijeka === "Kupa") { return legendData[5].color}
+  else if (d.properties.Rijeka === "Korana") { return legendData[6].color }
+  else if (d.properties.Rijeka === "Una") { return legendData[7].color }
+  else if (d.properties.Rijeka === "Neretva") { return legendData[8].color }
+});
+}
+PrikazVodostajLegende();
   </script>
 </body>
 </html>
